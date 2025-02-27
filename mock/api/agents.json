@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "name": "Juan Pérez",
+    "status": "available",
+    "waitTime": 0,
+    "lastStatusChange": "2023-10-01T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "María López",
+    "status": "on_call",
+    "waitTime": 300,
+    "lastStatusChange": "2023-10-01T09:55:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Carlos Gómez",
+    "status": "on_break",
+    "waitTime": 600,
+    "lastStatusChange": "2023-10-01T09:50:00Z"
+  },
+  {
+    "id": "4",
+    "name": "Ana Ramírez",
+    "status": "offline",
+    "waitTime": 0,
+    "lastStatusChange": "2023-10-01T09:45:00Z"
+  }
+]

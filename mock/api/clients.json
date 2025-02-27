@@ -1,0 +1,30 @@
+[
+  {
+    "id": "101",
+    "name": "Cliente A",
+    "waitTime": 120,
+    "joinedAt": "2023-10-01T09:58:00Z",
+    "priority": 1
+  },
+  {
+    "id": "102",
+    "name": "Cliente B",
+    "waitTime": 300,
+    "joinedAt": "2023-10-01T09:50:00Z",
+    "priority": 2
+  },
+  {
+    "id": "103",
+    "name": "Cliente C",
+    "waitTime": 600,
+    "joinedAt": "2023-10-01T09:40:00Z",
+    "priority": 3
+  },
+  {
+    "id": "104",
+    "name": "Cliente D",
+    "waitTime": 900,
+    "joinedAt": "2023-10-01T09:30:00Z",
+    "priority": 1
+  }
+]

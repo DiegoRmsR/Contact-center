@@ -4,8 +4,8 @@ export interface Agent {
   id: string;
   name: string;
   status: AgentStatus;
-  waitTime: number; // in seconds
-  lastStatusChange: string; // ISO date string
+  waitTime: number;
+  lastStatusChange: string;
 }
 
 export interface AgentFilters {

@@ -2,7 +2,7 @@
 
 import { Agent, AgentStatus } from '@/types/agent';
 import { fetchAgents } from '@/services/api';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import websocketService from '@/services/websocket';
 
 interface AgentsContextType {
@@ -21,7 +21,7 @@ export function AgentsProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<AgentStatus | null>(null);
   
-  const loadAgents = async () => {
+  const loadAgents = useCallback(async () => {
     try {
       setLoading(true);
       const filters = statusFilter ? { status: statusFilter } : {};
@@ -34,30 +34,28 @@ export function AgentsProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter]);
+  
   
   useEffect(() => {
     loadAgents();
-  }, [statusFilter]);
+  }, [loadAgents]);
+  
   
   useEffect(() => {
     const handleAgentUpdate = (updatedAgent: Agent) => {
       setAgents(prevAgents => {
-        // If there's an active filter and the agent doesn't match, remove it
         if (statusFilter && updatedAgent.status !== statusFilter) {
           return prevAgents.filter(agent => agent.id !== updatedAgent.id);
         }
         
-        // Check if the agent already exists
         const agentExists = prevAgents.some(agent => agent.id === updatedAgent.id);
         
         if (agentExists) {
-          // Update the existing agent
           return prevAgents.map(agent => 
             agent.id === updatedAgent.id ? updatedAgent : agent
           );
         } else if (!statusFilter || updatedAgent.status === statusFilter) {
-          // Add the new agent if it matches the filter
           return [...prevAgents, updatedAgent];
         }
         

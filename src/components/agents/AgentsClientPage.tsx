@@ -20,7 +20,6 @@ export default function AgentsClientPage({
   const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [statusFilter, setStatusFilter] = useState<AgentStatus | null>(initialStatus);
   
-  // Update filters in the URL
   const updateFilters = (status: AgentStatus | null) => {
     const params = new URLSearchParams(searchParams.toString());
     
@@ -34,25 +33,20 @@ export default function AgentsClientPage({
     setStatusFilter(status);
   };
   
-  // Set up WebSocket for real-time updates
   useEffect(() => {
     const handleAgentUpdate = (updatedAgent: Agent) => {
       setAgents(prevAgents => {
-        // If the updated agent shouldn't be shown due to the filter, remove it
         if (statusFilter && updatedAgent.status !== statusFilter) {
           return prevAgents.filter(agent => agent.id !== updatedAgent.id);
         }
         
-        // Check if the agent already exists in the list
         const agentExists = prevAgents.some(agent => agent.id === updatedAgent.id);
         
         if (agentExists) {
-          // Update the existing agent
           return prevAgents.map(agent => 
             agent.id === updatedAgent.id ? updatedAgent : agent
           );
         } else if (!statusFilter || updatedAgent.status === statusFilter) {
-          // Add the new agent if it matches the filter
           return [...prevAgents, updatedAgent];
         }
         
@@ -60,19 +54,15 @@ export default function AgentsClientPage({
       });
     };
     
-    // Subscribe to agent updates
     websocketService.on('agent_update', handleAgentUpdate);
     
-    // Connect WebSocket
     websocketService.connect();
     
-    // Cleanup on unmount
     return () => {
       websocketService.off('agent_update', handleAgentUpdate);
     };
   }, [statusFilter]);
   
-  // Render status filters
   const renderStatusFilters = () => {
     const statuses: AgentStatus[] = ['available', 'on_call', 'on_break', 'offline'];
     

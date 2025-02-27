@@ -1,41 +1,51 @@
-import { Suspense } from 'react';
-import AgentsClientPage from '@/components/agents/AgentsClientPage';
-import { fetchAgents } from '@/services/api';
+import { Suspense } from "react";
+import { Metadata } from "next";
+import AgentsClientPage from "@/components/agents/AgentsClientPage";
+import { fetchAgents } from "@/services/api";
+import { AgentStatus } from "@/types/agent";
 
-// This function runs on the server to generate dynamic metadata
-export async function generateMetadata({ searchParams }) {
-  const status = searchParams.status || 'all';
+interface SearchParams {
+  status?: AgentStatus;
+}
+
+type PageProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const status = params.status || "all";
+
   return {
-    title: `Agents ${status !== 'all' ? status : ''} - Contact Center`,
+    title: `Agents ${status !== "all" ? ` - ${status}` : ""} | Contact Center`,
   };
 }
 
-export default async function AgentsPage({ searchParams }) {
-  // Get the status filter from the search parameters
-  const statusFilter = searchParams.status || null;
+export default async function AgentsPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const statusFilter = params.status || null;
   const filters = statusFilter ? { status: statusFilter } : {};
 
   try {
-    // Fetch the agents from the server's API
     const initialAgents = await fetchAgents(filters);
 
-    // Return the component with the initial state and suspense while loading
     return (
-      <Suspense fallback={<p>Loading...</p>}>
-        <AgentsClientPage 
-          initialAgents={initialAgents} 
-          initialStatus={statusFilter} 
+      <Suspense fallback={<div className="p-4">Loading agents...</div>}>
+        <AgentsClientPage
+          initialAgents={initialAgents}
+          initialStatus={statusFilter}
         />
       </Suspense>
     );
-  } catch (error) {
-    // Handle errors in case data fetching fails
+  } catch {
     return (
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">Contact Center Agents</h1>
-        <p className="text-red-500">
-          Error loading data. Please try reloading the page.
-        </p>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          Error loading agents. Please try again later.
+        </div>
       </div>
     );
   }

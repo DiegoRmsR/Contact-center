@@ -1,8 +1,8 @@
 export interface Client {
   id: string;
   name: string;
-  waitTime: number; // in seconds
-  joinedAt: string; // ISO date string
+  waitTime: number;
+  joinedAt: string;
   priority: number;
 }
 

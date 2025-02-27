@@ -9,7 +9,6 @@ interface AgentCardProps {
 const AgentCard: FC<AgentCardProps> = ({ agent }) => {
   const { name, status, waitTime } = agent;
   
-  // Convert seconds to readable format
   const formatTime = (seconds: number): string => {
     if (seconds < 60) return `${seconds}s`;
     

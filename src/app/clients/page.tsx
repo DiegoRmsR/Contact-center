@@ -9,7 +9,6 @@ export default function ClientsPage() {
   const router = useRouter();
   const { clients, loading, error, filters, updateFilters } = useClients();
   
-  // Synchronize local state with URL parameters
   useEffect(() => {
     const minWaitTime = searchParams.get('minWaitTime') 
       ? parseInt(searchParams.get('minWaitTime')!) 
@@ -24,7 +23,6 @@ export default function ClientsPage() {
     }
   }, [searchParams, filters, updateFilters]);
   
-  // Update URL when filters change
   const handleUpdateFilters = (min?: number, max?: number) => {
     const params = new URLSearchParams(searchParams.toString());
     
@@ -43,7 +41,6 @@ export default function ClientsPage() {
     router.push(`/clients?${params.toString()}`);
   };
   
-  // Function to format the wait time
   const formatTime = (seconds: number): string => {
     if (seconds < 60) return `${seconds}s`;
     
@@ -53,7 +50,6 @@ export default function ClientsPage() {
     return `${minutes}m ${remainingSeconds}s`;
   };
   
-  // Render wait time filters
   const renderWaitTimeFilters = () => {
     return (
       <div className="flex flex-wrap gap-4 mb-4">
