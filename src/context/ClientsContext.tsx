@@ -4,7 +4,6 @@ import { Client } from "@/types/client";
 import { fetchClients } from "@/services/api";
 import {
   createContext,
-  useContext,
   useState,
   useEffect,
   ReactNode,
@@ -25,13 +24,13 @@ interface ClientsContextType {
   updateFilters: (newFilters: ClientFilters) => void;
 }
 
-const ClientsContext = createContext<ClientsContextType | undefined>(undefined);
+export const ClientsContext = createContext<ClientsContextType | undefined>(undefined);
 
 export function ClientsProvider({ children }: { children: ReactNode }) {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter]  = useState<ClientFilters>({});
+  const [statusFilter, setStatusFilter] = useState<ClientFilters>({});
 
   const loadClients = useCallback(async () => {
     try {
@@ -46,13 +45,14 @@ export function ClientsProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   }, [statusFilter]);
-  
+
   useEffect(() => {
     loadClients();
   }, [loadClients]);
 
   useEffect(() => {
     const handleClientUpdate = (updatedClient: Client) => {
+      console.log('updatedClient', updatedClient)
       setClients((prevClients) => {
         if (
           (statusFilter.minWaitTime !== undefined &&
@@ -111,12 +111,4 @@ export function ClientsProvider({ children }: { children: ReactNode }) {
   return (
     <ClientsContext.Provider value={value}>{children}</ClientsContext.Provider>
   );
-}
-
-export function useClients() {
-  const context = useContext(ClientsContext);
-  if (context === undefined) {
-    throw new Error("useClients must be used within a ClientsProvider");
-  }
-  return context;
 }

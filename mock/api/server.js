@@ -1,7 +1,11 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { readFile } from "fs/promises";
+import cors from "cors";
+import http from "http";
+import agentsRouter from "./routes/agents.js";
+import clientsRouter from "./routes/clients.js";
+import { setupWebSocket } from "./websocket/server.js";
 
 const app = express();
 const PORT = 3001;
@@ -9,18 +13,18 @@ const PORT = 3001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.get("/api/agents", async (req, res) => {
-  const agents = JSON.parse(await readFile(path.join(__dirname, "agents.json"), "utf-8"));
-  res.json(agents);
-});
+app.use(cors());
+app.use(express.json());
 
-app.get("/api/clients", async (req, res) => {
-  const clients = JSON.parse(await readFile(path.join(__dirname, "clients.json"), "utf-8"));
-  res.json(clients);
-});
+app.use("/api/agents", agentsRouter);
+app.use("/api/clients", clientsRouter);
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(PORT, () => {
-  console.log(`Mock API running at http://localhost:${PORT}`);
+const server = http.createServer(app);
+
+setupWebSocket(server);
+
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
